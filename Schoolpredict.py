@@ -31,8 +31,9 @@ def modeltrain(features,labels):
     
 if __name__=="__main__":
     features = featurecalculate()
-    regr = joblib.load('D:\lr.model')
-    result = regr.predict(features)
+#    modeltrain()
+#    regr = joblib.load('D:\lr.model')
+#    result = regr.predict(features)
     
 
  
