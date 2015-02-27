@@ -1,0 +1,6 @@
+1 CS
+2 EE
+3 ME
+4 Stat
+5 MIS
+6 
