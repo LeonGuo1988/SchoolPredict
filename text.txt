@@ -1,0 +1,20 @@
+
+
+&title=青岛站2012-04-15日风速图示资料（单位：米/秒）,{font-size: 18px; color: #000000}&
+&x_axis_steps=3&
+&y_legend=风力,12,0x736AFF&
+&x_legend=时间,12,0x736AFF&
+&y_ticks=5,10,4&
+&line_dot=2,#9C284A,风力,10,5&
+&values=&
+&x_labels=&
+&y_min=99990&
+&y_max=-89&
+&bg_colour=#E7F7FF&
+&x_axis_colour=#3690db&
+&x_grid_colour=#E7F7FF&
+&y_axis_colour=#3690db&
+&y_grid_colour=#E7F7FF&
+&inner_background=#42CFFF,#427DCE,90&
+&tool_tip=
+&x_offset=true&
