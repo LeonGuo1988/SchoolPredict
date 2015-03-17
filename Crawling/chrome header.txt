@@ -1,0 +1,23 @@
+Remote Address:113.10.173.192:80
+Request URL:http://deerchao.net/images/regex_tester.png
+Request Method:GET
+Status Code:304 Not Modified
+Request Headersview source
+Accept:image/webp,*/*;q=0.8
+Accept-Encoding:gzip, deflate, sdch
+Accept-Language:en-US,en;q=0.8,zh;q=0.6,zh-CN;q=0.4,zh-TW;q=0.2
+Cache-Control:max-age=0
+Connection:keep-alive
+Cookie:__utma=218991500.380772215.1425236017.1425236017.1425236017.1; __utmc=218991500; __utmz=218991500.1425236017.1.1.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided)
+Host:deerchao.net
+If-Modified-Since:Wed, 20 Mar 2013 08:25:48 GMT
+If-None-Match:"78cd56864425ce1:0"
+Referer:http://deerchao.net/tutorials/regex/regex.htm
+User-Agent:Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36
+Response Headersview source
+Accept-Ranges:bytes
+Date:Mon, 02 Mar 2015 01:38:24 GMT
+ETag:"78cd56864425ce1:0"
+Last-Modified:Wed, 20 Mar 2013 08:25:48 GMT
+Server:Microsoft-IIS/7.5
+X-Powered-By:ASP.NET
