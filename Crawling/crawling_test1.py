@@ -16,7 +16,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 # 1. Connect to the web page
-url = 'http://www.1point3acres.com/bbs/forum.php?mod=viewthread&tid=112222'  
+url = 'http://www.1point3acres.com/bbs/thread-115224-1-1.html'  
 
 #Header
 header = {'Host': 'www.1point3acres.com',
@@ -37,100 +37,125 @@ login_res = s.post(url,data=logininfo,headers=header)
 
 #request to connect
 main_page = s.get(url).content
-#req = urllib2.Request(url)    
-#response = urllib2.urlopen(req)
-#time.sleep(1) 
-#the_page = response.read()  
-#response.close()
-
-typeEncode = sys.getfilesystemencoding()
-infoencode = chardet.detect(main_page).get('encoding','utf-8')
-the_page = main_page.decode(infoencode,'ignore').encode(typeEncode)
 mainsoup = BeautifulSoup(main_page, from_encoding='GB18030')
 
-linkname = []
-linkcoll = []
-for link in mainsoup.find_all('a',target="_blank"):
-    if '/bbs/thread' in link.get('href'):
-        linkcoll.append(link.get('href'))
-        linkname.append(link.text)
-
-#for url in linkcoll:
-#    link_page = s.get(url).content
-#    time.sleep(1)
-#    infoencode = chardet.detect(link_page).get('encoding','utf-8')
-#    link_page = link_page.decode(infoencode,'ignore').encode(typeEncode)
-#    soup = BeautifulSoup(link_page, from_encoding='GB18030')
-#    print 1
-    
-link_page = s.get(linkcoll[1]).content
-time.sleep(1)
-infoencode = chardet.detect(link_page).get('encoding','utf-8')
-#link_page = link_page.decode(infoencode,'ignore').encode(typeEncode)
-linksoup = BeautifulSoup(link_page, from_encoding='GB2312') 
-    
-g_data = linksoup.find_all('div',id='ct')
-
-for item in g_data:
-    print item.text
-    
-save = open('text.txt','w')
-save.write(str(linksoup.prettify))
-save.close
-
-'''
-soup = BeautifulSoup(the_page)
-print soup.prettify()
-
-soup.find_all('a')
-for link in soup.find_all('a'):
-    print link.text, link.get('href')
-    
-g_data = soup.find_all('div',class_='pcb')    
-
-for item in g_data:
-    print item.text
-
-for item in g_data:
-    print item.contents[0].text
-    
-for item in g_data:
-    print item.find_all('li')    
-'''
-
+#%%
 # 2. Analyze the web page
-#soup = BeautifulSoup.BeautifulSoup(the_page)
+names = []
+links = []
+for item in mainsoup.find_all('a',target="_blank"):
+    if 'bbs/thread' in item.get('href'):
+        links.append(item.get('href'))
+        names.append(item.text)
+#%%
+n = 0
+full_info = []        
+for link in links:
+    user_name  = names[n]
+    link_page = s.get(link).content
+    time.sleep(1)
+    linksoup = BeautifulSoup(link_page, from_encoding='GB18030') 
+    
+    #过滤出录取信息和背景信息
+    g_data = linksoup.find_all('div',id='ct')
+    
+    #admission_info = [(item.text).strip().split('[')[-1] for item in admission]    
+    #background_info = [(item.text).strip().split(':')[-1] for item in background]
+    
+    admission = [] #录取信息，如：[15Fall.MS.AD无奖][MIS@U Arizona]通知时间: 2015-03-10
+    background = [] #背景信息
+    for item in g_data:
+        admission = item.find_all('u')
+        background = item.find_all('li')
 
-#temp_re = re.match(r'[A-Za-z\s]+(\d*)[A-Za-z\s]+(\d*)', temp_str)
+    #term, degree, ad_type, major, school, noti_date
+    ad_info = []
+    for item in admission:
+        ad_info.append(item.text)
+    
+    ad_info_temp = re.sub('[\[\]@:]','.',ad_info[0])
+    ad_info = re.sub(r'\.\.','.',ad_info_temp).split('.')
+    del ad_info[0], ad_info[-2]
+    
+    #录取信息抽取
+    ad_term = ad_info[0]
+    ad_degree = ad_info[1]
+    ad_type = ad_info[2]
+    ad_major = ad_info[3]
+    ad_school = ad_info[4]
+    ad_noti_date = ad_info[5]
+    
+    #背景信息抽取:
+    backgd_info = []
+    for item in background:
+        backgd_info.append(item.text)
+    
+    #定位贴链接   
+    dingwei_link = backgd_info[0].split(':')[-1] 
+    
+    #本科信息：学校，专业，GPA
+    undergrad = re.sub('[@:]',',',backgd_info[1]).split(',')
+    undergrad_major = undergrad[1]   
+    undergrad_school = undergrad[2]
+    undergrad_GPA = undergrad[3]
+    undergrad_comments = undergrad[4] #其他信息
+    
+    #研究生信息：学校，专业，GPA
+    grad = re.sub('[@:]',',',backgd_info[2]).split(',')
+    grad_major = grad[1]   
+    grad_school = grad[2]
+    grad_GPA = grad[3]
+    grad_comments = grad[4] #其他信息
+    
+    #TOEFL & GRE & sub
+    toefl = backgd_info[3].split(':')[-1]
+    gre = backgd_info[4].split(':')[-1]
+    gre_sub = backgd_info[5].split(':')[-1]
+    
+    #other comment
+    other_comment = backgd_info[6].split(':')[-1]
+    
+    #submition time
+    sub_time = backgd_info[7].split(':')[-1]
+    
+    combine_info = [user_name, link, ad_term, ad_degree, ad_type, ad_major, \
+    ad_school, ad_noti_date, dingwei_link, undergrad_major, undergrad_school, \
+    undergrad_GPA, undergrad_comments, grad_major, grad_school, grad_GPA, \
+    grad_comments, toefl, gre, gre_sub, other_comment, sub_time]
+    full_info.append(combine_info)
 
-'''
-正则表达式
-元字符
-\b  单词的开头或结尾，也就是单词的分界处   \bhi\b
-.   除了换行符以外的任意字符    \bhi\b.*\bLucy\b
-*   前边的内容可以连续重复使用任意次数    \bhi\b.*\bLucy\b
-\d  匹配一位数字(0，或1，或2，或……)    0\d\d-\d\d\d\d\d\d\d\d
-\s  匹配任意的空白符，包括空格，制表符(Tab)，换行符，中文全角空格等
-\w  匹配字母或数字或下划线或汉字等。
-
-重复
-*	重复零次或更多次
-+	重复一次或更多次
-?	重复零次或一次
-{n}	重复n次
-{n,}	重复n次或更多次
-{n,m}	重复n到m次
-'''
-
-
-
+    n = n + 1
+#%%
 # 3. Save data
+save = open('text.txt','w')
+save.write(str(main_page))
+save.close
+#
+save = open('text.txt','w')
+for item in full_info:
+    for item1 in item:
+        save.write("%s ," % item1.encode('GB18030'))
+        save.write("\n")   
+#
+with open('text.txt', 'w') as f:
+    for s in full_info[1]:
+        f.write((s + u',').encode('unicode-escape'))
+
+with open('text.txt', 'w') as f:
+    for s in full_info[1]:
+        f.write(str(s).encode('utf-8') + ',')
+
+
 #file = open('webdata.txt','a')
 #line = paper_name + '#' + paper_author + '#' + paper_desc + '#' + citeTimes + '\n'
 #file.write(the_page)
 #file.close()
-
-
+#for item in thelist:
+#  thefile.write("%s\n" % item)
+#
+#with open(the_filename, 'w') as f:
+#    for s in my_list:
+#        f.write((s + u'\n').encode('unicode-escape'))
 #reference link
 #http://www.crummy.com/software/BeautifulSoup/bs4/doc/index.zh.html
 #http://www.cnpythoner.com/post/310.html
