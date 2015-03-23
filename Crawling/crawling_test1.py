@@ -128,23 +128,10 @@ for link in links:
 #%%
 # 3. Save data
 save = open('text.txt','w')
-save.write(str(main_page))
-save.close
-#
-save = open('text.txt','w')
 for item in full_info:
     for item1 in item:
         save.write("%s ," % item1.encode('GB18030'))
-        save.write("\n")   
-#
-with open('text.txt', 'w') as f:
-    for s in full_info[1]:
-        f.write((s + u',').encode('unicode-escape'))
-
-with open('text.txt', 'w') as f:
-    for s in full_info[1]:
-        f.write(str(s).encode('utf-8') + ',')
-
+    save.write("\n")   
 
 #file = open('webdata.txt','a')
 #line = paper_name + '#' + paper_author + '#' + paper_desc + '#' + citeTimes + '\n'
