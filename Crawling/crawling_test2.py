@@ -35,7 +35,7 @@ for item in headleonitem:
 
 print headlinks[1]
 
-for headlink in headlinks[12:15]:
+for headlink in headlinks[0:42]:
     
     url = headlink
     s = requests.Session()
@@ -53,20 +53,20 @@ for headlink in headlinks[12:15]:
     n = 0
     full_info = []   
     for link in links:
-        conn = pymysql.connect(host="localhost",user="root",passwd="19880902",db="mytest", charset='utf8')
-        cur = conn.cursor()
-        time.sleep(5)
-        user_name  = names[n]
-        link_page = s.get(link).content
-        
-        linksoup = BeautifulSoup(link_page, from_encoding='GB18030') 
-        
-        g_data = linksoup.find_all('div',{'class':'pct'})
-        
-        admission = [] #录取信息，如：[15Fall.MS.AD无奖][MIS@U Arizona]通知时间: 2015-03-10
-        background = [] #背景信息
-        i=0
-        try:   
+	    try:  
+			conn = pymysql.connect(host="localhost",user="root",passwd="19880902",db="mytest", charset='utf8')
+			cur = conn.cursor()
+			time.sleep(8)
+			user_name  = names[n]
+			link_page = s.get(link).content
+			
+			linksoup = BeautifulSoup(link_page, from_encoding='GB18030') 
+			
+			g_data = linksoup.find_all('div',{'class':'pct'})
+			
+			admission = [] #录取信息，如：[15Fall.MS.AD无奖][MIS@U Arizona]通知时间: 2015-03-10
+			background = [] #背景信息
+			i=0 
             for item in g_data:
                 if item.find_all('u')==[]:
                     pass  
